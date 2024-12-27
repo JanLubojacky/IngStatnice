@@ -5,8 +5,11 @@
 
 **Mean, Variance and Standard Deviation**
 - sum is replaced by an integral for continous distributions
+
 $$\textcolor{#98d8d6}{\mu} = E[X] = \sum_x P(X=x)\cdot x$$
+
 $$\text{Var}(X) = E[(X - \textcolor{#98d8d6}{\mu})^2] = \sum_x P(X=x)\cdot(x - \textcolor{#98d8d6}{\mu})^2 $$
+
 $$\sigma = \sqrt{\text{Var}(X)}$$
 ## Linear regression
 
