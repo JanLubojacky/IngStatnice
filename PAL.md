@@ -4,7 +4,7 @@
 ## Standardní grafove algoritmy s polynomiální složitostí
 - A graph $G(V,E)$ is a set of verticies $V$ and edges $E$
 - Incidence
-	- If two nodes x,y are linked by edge e, nodes x,y are said to be incident to edge e or edge e is incident to nodes x,y
+	- If two nodes $u,v$ are linked by edge $e$, nodes $u,v$ are said to be incident to edge $e$ or edge $e$ is incident to nodes $u,v$
 - handshaking lemma
 	- $\sum_{v\in V} deg(v)=2|E|$
 
@@ -39,7 +39,9 @@ def dfs(graph, start):
 ```
 or recursive
 ```python
-def dfs(graph, vertex, visited):
+def dfs(graph, vertex, visited=None):
+  if visited is None:
+      visited = set()
   visited.add(vertex)
 
   for neighbor in graph[vertex]:
