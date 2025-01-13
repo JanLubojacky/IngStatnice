@@ -5,7 +5,7 @@
 > - magnetická rezonance (MRI) - fyzikální principy, prostorové kódování, funkční magnetická rezonance (fMRI)
 > - nukleární zobrazovací metody - SPECT, PET, principy, rekonstrukční algoritmy a použití
 
-**Microscopy 🔬**
+**Microscopy :microscope:**
 
 **X-ray 🩻**
 
@@ -13,4 +13,4 @@
 
 **MRI 🧲**
 
-**Nuclear imaging ☢️**
+**Nuclear imaging 🧬**
