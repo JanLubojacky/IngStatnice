@@ -88,5 +88,8 @@ def dfs(graph, vertex, visited=None):
 ## Vyhledávání ve vícedimenzionálním prostoru
 
 ### K-d tree
+- trees used for searching in point clouds, useful for algorithms that need to calculate distances between points
+- bulding the tree:
+  - the tree contains alternating levels that split the space based on each dimension
 
 ## Presné a přibližné vyhledávání v textu založené na konečných automatech
