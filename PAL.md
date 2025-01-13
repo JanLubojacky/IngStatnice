@@ -85,11 +85,29 @@ def dfs(graph, vertex, visited=None):
 
 ## Vyhledávací stromy a haldy, jejich využití
 
+### Binary search tree
+
+### Skip list
+
+### B-trees
+
+### Red-black tree
+
+### Binary heap
+
+#### D-ary heap
+
+### Binomial heap
+
+### Fibonacci heap
+
 ## Vyhledávání ve vícedimenzionálním prostoru
 
 ### K-d tree
-- trees used for searching in point clouds, useful for algorithms that need to calculate distances between points
+- trees used for searching in point clouds, useful for algorithms that need to calculate distances between points often such as k-nearest neighbours, k-means, ICP (iterative closest point), ...
+- the tree contains alternating levels that divide the search space in half based on each dimension, so in the first level all left children will have the $x$ coordinate smaller and all right children will have the $x$ coordinate bigger
+- the splits alternate in each level so for 3D first level splits by $x$ second splits by $y$, third by $z$, fourth again by $x$, ...
 - bulding the tree:
-  - the tree contains alternating levels that split the space based on each dimension
+  - we have to order the points to decide in which order we insert them to the tree, this sorting has to happen for each coordinate so this will be $O(k\cdot n\log n)$, building the tree itself is then $O(n)$
 
 ## Presné a přibližné vyhledávání v textu založené na konečných automatech
