@@ -77,11 +77,105 @@ def dfs(graph, vertex, visited=None):
 - time complexity is $O(E \log V)$
 - Can be run in linear time for planar graphs
 
-## Kombinatorické a číselně teoretické algoritmy
+### Strongly connected components
+- SCC is a maximal subgraph in which a walker can freely move and can reach each node in SCC from every other node
+#### Tarjan
 
-## Izomorfismus
+### Isomorphism
+- Two graphs are isomorphic if we can get a 1:1 mapping (bijection) that preserves the adjacency relationships between vertices
+- Checking isomorphism exactly in a general case is expensive (though it is not know if it is polynomial or np-complete) because of the combinatorial nature of the problem where we have to try each possible mapping
+- It can be sped up with invariants $\phi()$
+  - for invariants it holds that if $G_1$ and $G_2$ are isomorphic then $\phi(G_1)=\phi(G_2)$
+  - invariants can for example be the number of vertices, number of edges, degrees of vertices, ...
+  - invariants are necessary though not sufficient for isomorphism
+
+### Euler trail
+- An Euler trail visits every edge exactly once
+- A graph G has an Euler trail if and only if it is connected and has 0 or 2 vertices of odd degree
+
+### Hamiltonian path
+- visits every vertex exactly once
+- finding such path is np-complete
+
+## Kombinatorické a číselně teoretické algoritmy
+- n - number of objects
+- r - sample size
+- combination: order doesnt matter
+	- [0,1] == [1,0]
+- permutation: order does matter
+	- [0,1] != [1,0]
+- repetitions $\rightarrow$ each object can be present multiple times in the sequence
+- combinations nCr without repetition
+  $$\binom{n}{r}=\frac{n!}{r!\cdot(n-r)!}$$
+- combinations with repetition
+  $$\frac{(n+r-1)!}{r!\cdot(n-1)!}$$
+- permutations nPr without repetition 
+  $$\frac{n!}{(n-r)!}$$
+- permutations with repetition
+  $$
+  n^r
+  $$
+### Ranking & Unranking
+- it is useful to order combinations/permutations in lexicographical order and assign id to each
+**Rank**
+- then we can generate rank given a perm/comb
+**Unrank**
+- generate a perm/comb given a rank
+
+### Gray code
+- binary numeral system where following values only differ in one bit
+- rotacni enkodery
+- coverting binary to gray
+	- rewrite MSB
+	- compare neighbouring numbers
+	- if same => write 0
+	- if different => write 1
+- gray to binary
+	- rewrite MSB
+	- compare last grey bit and next binary
+	- if same => write 0
+	- if different => write 1
 
 ## Prvočíselnost a pseudonáhodná čísla
+
+### Prime numbers
+
+#### The Sieve of Eratosthenes
+- given $n$ numbers
+- for each number in $[2,\ldots,\sqrt{n}]$
+  - mark number as prime
+  - mark all multiples of the number < $n$ as not prime
+  - complexity $O(n\cdot\log\:\log\:n)$
+
+### Prime decomposition
+
+### Random number generators
+- true random numbers are not possible, what we have are formulas that start with a number (seed) and generate a sequence of pseudorandom numbers
+- a good generator should be
+  - uniform
+  - fast
+  - have simple formula
+
+#### Lehmer
+- $x_{n+1}=A\cdot x_n \: mod\:M$
+- Conditions for maximal period
+	- $M$ is prime
+	- $A$ is primitive root modulo $M$
+		-   $A$ is primitive root modulo $M$ if
+			- $A^x\:mod\:M$ can generate all numbers $<0, M-1>$
+			-   For some $x \in \mathbb{Z}$
+
+#### Linear Congruental Generator
+- $x_{n+1} = (Ax_n + C)\:mod\:M$
+- maximum period lenght
+- Hull-Dobell theorem
+	- length is max, e.g. equal to M if
+	1. $C$ and $M$ are coprimes (nemaji spolecneho delitele krom 1)
+	2. $A-1$ is divisible by each prime factor of $M$ 
+	3. If $4$ divides $M$, $4$ also divides $A-1$ 
+
+#### Blum Blum Shub Generator
+- $x_{n+1}=x_n^2\:mod\:M$
 
 ## Vyhledávací stromy a haldy, jejich využití
 
