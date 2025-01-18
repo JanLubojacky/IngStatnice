@@ -11,18 +11,18 @@
 ### ERM vocabulary
 - **Predictor**
 	- predicts a label $y$ from a feature $y=h(x)$
-- **Loss function** 
+- **Loss function**
   $$l(h(x),y) = l(\hat{y},y)$$
 	- gives the penalty given a predicted label and the true label
-- **True risk** 
+- **True risk**
   $$R(h) = \mathbb{E}[l(h(x),y)] = \sum_{x\in X}\sum_{y\in Y} p(x,y)\cdot l(h(x),y)$$
 	- This is the true risk we are making, for it we need the joint pdf $p(x,y) = p(y) \cdot p(x|y) = p(x)\cdot p(y|x)$ , which we dont usually know
-- **Empirical risk** 
+- **Empirical risk**
   $$R(h) \approx R_{S^m}(h) = \frac{1}{m}\sum_{i = 1}^m l(h(x_i),y_i)$$
 	- We estimate the true risk by an empirical risk, which is computed as the mean loss over all our examples
-- **Bayes predictor** 
+- **Bayes predictor**
   $$R(h^*) = \inf_{h\in Y^X} R(h)$$
-	- optimal predictior is $h^*$, that attains the minimal risk 
+	- optimal predictior is $h^*$, that attains the minimal risk
   $$h^*(x) = \arg\min_{y} R(h)$$
 - Empirical risk can totally fail to be a good proxy for the true risk for some hypothesis classes
 
@@ -68,37 +68,6 @@ $$f(x|\theta) = h(x)\exp(\eta(\theta)^T T(x) - A(\theta))$$
 	- (2) $\eta$ - natural parameter, is a function of the distribution parameters $\theta$, needs to be multiplied by the random variable $x$
 	- (3) $T$ - sufficient statistics, function of the random variable $x$
 	 - (4) $A(\theta)$ - the rest, function of the parameters $\theta$
-
-### [Kullback-Leibler divergence](https://www.countbayesie.com/blog/2017/5/9/kullback-leibler-divergence-explained)
-- the entropy of a (discrete) distribution is 
-
-  $$
-  H(\mathcal{X}) = - \sum_{x \in \mathcal{X}}P(x)\cdot \log_k P(x)
-  $$
- 
-  and represents the lower bound on the average number of bits (for $k = 2$) needed to represent a realization of the distribution (a sample)
-- KL can be viewed as a slight modification of the entropy formula
-  $$
-  \text{KL}(\textcolor{#ffcccb}{P} \parallel \textcolor{#add8e6}{Q}) = \sum_{x \in \mathcal{X}} \textcolor{#ffcccb}{P(x)} (\log \textcolor{#ffcccb}{P(x)} - \log \textcolor{#add8e6}{Q(x)}) = 
-  \sum_{x \in \mathcal{X}} \textcolor{#ffcccb}{P(x)} \log \frac{\textcolor{#ffcccb}{P(x)}}{\textcolor{#add8e6}{Q(x)}}\quad(0)
-  $$
-
-  where for each value that $\textcolor{#ffcccb}{P(x)}$ can take we look at how this differs wrt $\textcolor{#add8e6}{Q(x)}$ weighing the difference more where the density is higher for $\textcolor{#ffcccb}{P(x)}$ this has one important implication that KL divergence is *NOT* symmetric (and thus not a distance metric)
-
-  $$\text{KL}(\textcolor{#ffcccb}{P} \parallel \textcolor{#add8e6}{Q}) \ne \text{KL}(\textcolor{#add8e6}{Q} \parallel \textcolor{#ffcccb}{P})$$
-  we can also rewrite $(0)$ like this to express the expected amount of bits of information we lose when approximating $\textcolor{#ffcccb}{P}$ with $\textcolor{#add8e6}{Q}$
-  $$
-  \text{KL}(\textcolor{#ffcccb}{p} \parallel \textcolor{#add8e6}{q}) = 
-  \mathbb{E}_{x \sim \textcolor{#ffcccb}{p}} \left[\log \frac{\textcolor{#ffcccb}{p(x)}}{\textcolor{#add8e6}{q(x)}}\right] =
-  \mathbb{E}_{x \sim \textcolor{#ffcccb}{p}} \left[\log \textcolor{#ffcccb}{p(x)} - \log \textcolor{#add8e6}{q(x)}\right]
-  $$
-  or like this for continous probability distributions
-  $$
-  \text{KL}(\textcolor{#ffcccb}{p} \parallel \textcolor{#add8e6}{q}) =
-  \int \textcolor{#ffcccb}{p(x)} (\log\textcolor{#ffcccb}{p(x)} -\log\textcolor{#add8e6}{q(x)}) dx =
-  \int \textcolor{#ffcccb}{p(x)} \log \frac{\textcolor{#ffcccb}{p(x)}}{\textcolor{#add8e6}{q(x)}} dx
-  $$
-
 ### EM algorithm
 - We have data points for which we dont know the labels, we only know from which distributions they came from and how many distributions are there
 - These distributions is then what we are trying to fit to the data, each point $x_i$ gets assigned probabilities that it belongs to each distribution $y_j,\: j\in \{1,\ldots,J\}$
@@ -144,22 +113,12 @@ $$f(x|\theta) = h(x)\exp(\eta(\theta)^T T(x) - A(\theta))$$
 ## Ensembling
 
 - **Boosting**
-  - sequentially train *low variance* *high bias* predictors
+  - sequentially train *low* variance *high* bias predictors
   - subsequent predictors learn to fix the mistakes of the previous ones
   - exploit dependence between learners
-  - an example of this is Adaboost
+  - an example of this is adaboost
 - **Bagging (Bootstrap AGGregatING)**
   - sample different training sets from the original training set
-  - train *high variance low bias* predictors on these sets and average their predictions
+  - train high variance low bias predictors on these sets and average their predictions
   - exploit independence between predictors
   - an example of this is a random forest
-
-### Decision tree
-
-### Random forest
-
-### Adaboost
-
-### Gradient Boosted Trees
-
-### Gradient Boosting Machine
