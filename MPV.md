@@ -198,8 +198,10 @@
   $$W(x,p):\mathbb{R}^2\rightarrow \mathbb{R}^2$$
 - from the template image $T$ to a transformed image $I$ such that 
   $T(x)$~$I(W(x,p^*))$ for some $p^*$, which can be a homology such as translation, rotation, shift, …
+  - we assume brightness constancy: the intensity of a point remains constant as it moves between frames
+    $$I(x,y,t) = I(x+dx,y+dy,t+dt)$$
 - we can define the task as: 
-  $$SSD(p)=\sum_{x\in\text{ROI}}[I(W(x;p))-T(x)]^2$$
+  $$\begin{align} SSD(p)=\sum_{x\in\text{ROI}}[I(W(x;p))-T(x)]^2 \end{align}$$
   - find a $p^*$ such that 
     $$p^*=\arg\min_{p} SSD(p)$$
     - we solve it by:
@@ -208,12 +210,31 @@
     3. first step is an approximation, so iterate to get closer again
     4. The algorithm runs for a limited number of steps if it doesn't converge for a point in time drop the point
 - **KLT updates**
-  - for a point $(k,l)$ in some patch / window $W$, where $dIx,dIy$ are spatial derivatives and $dIt$ is a time derivative
-  - $$dIx(k,l)u+dIy(k,l)v=-dIt(k,l)$$
-  - for an image patch with $n$ points we can put the spatial derivatives into matrix $A\in \mathbb{R}^{2\times n}$ and time derivative into matrix $B\in\mathbb{R}^{n}$ and write it like this 
-  $$Au=B$$
+  - for a point $(k,l)$ in some patch / window $W$, if we linearize $(3)$ and assume only translation we obtain the optical flow equation
+    $$dIx(k,l)u+dIy(k,l)v=-dIt(k,l)$$
+    where $dIx,dIy$ are spatial derivatives and $dIt$ is the time derivative
+  - for an image patch with $n$ points we can put the spatial derivatives into matrix $A\in \mathbb{R}^{2\times n}$ and time derivative into matrix $B\in\mathbb{R}^{n}$ and write it like this
+    $$A\mathbf{u}=B$$
+    where
+    $$
+    \begin{bmatrix} 
+    I_x(p_1) & I_y(p_1) \\
+    \vdots & \vdots \\
+    I_x(p_n) & I_y(p_n)
+    \end{bmatrix}
+    \begin{bmatrix}
+    u \\
+    v
+    \end{bmatrix} = 
+    \begin{bmatrix}
+    -I_t(p_1) \\
+    \vdots \\
+    -I_t(p_n)
+    \end{bmatrix}
+    $$
+    - $\mathbf{u}$ is the velocity vector
     - $B$ is computed as $B=T(p)-I(p)$, where $T(p)$ is the flattened template patch and $I(p)$ is the flattened patch from the next frame
-  - we can find the least squares solution for this as $u=(A^TA)^{-1}A^TB$
+  - we can find the least squares solution for this as $\mathbf{u}=(A^TA)^{-1}A^TB$
   - then we update the position of the tracked patch with this solution
   - this will of course fail where $(A^TA)$ is singular which corresponds to patches where harris would fail (flat regions / edges)
 - **Properties of the KLT tracker**
@@ -223,6 +244,54 @@
 - **Summary**
   - initialize features with harris detector
   - estimate the optical flow between consecutive frames and move the tracked points accordingly
+
+### Discriminative tracking
+- pose tracking as a detection problem
+- we pose the tracking as a linear classifier with a sliding window, this corresponds to correlation
+- **Correleation filers**
+  - in the first frame define the template $w$
+  - then in each subsequent frame compute sliding window correlation
+    $$y=\mathbf{w}^T\mathbf{x}$$
+  - cross correlation (convolution) can be done very fast in the fourier domain as one dot product for the entire image (element wise product)
+    $$\mathbf{\hat y}=\mathbf{\hat x^*} \times \mathbf{\hat w}$$
+    where $x^*$ is complex conjugate (invert sign for the complex part)
+  - then we can compute the maxima from the activation map
+- **Problems & solutions**
+  - pure correlation has a huge response, so the localization is not very precise
+  - we want sharp peak $\rightarrow$ good localization
+  - what can be used is a gaussian detection filter with a mix of low and high frequencies
+- **MOSSE filter (min output sum of sq. errors)**
+  - another filter to provide better localization
+  - we want to find a filter with the maximum correlation for the template object 
+  - objective: 
+    $$\min_w||x*w-g||^2$$
+  - solution:
+    $$\hat w_{new}=\frac{\hat g \times \hat x}{\hat x^* \times \hat x + \lambda}$$
+  - update the old template with some percentage (e.g. $\eta = 0.01$) of the new template, this improves rotational invariance, background / translational invariance 
+  $$\hat w_t=(1-\eta)\hat w_{t-1}\cdot \eta \:\hat w_{new}$$
+  - **scale estimation**
+    - have a scale of 0.9, 1 and 1.1, which corresponds to differently sized bounding boxes
+    - and estimate the changing scale in every frame, in this way the maximum change in one second at 25 fps is $1.1^{25}\approx10.8$ and $0.9^{25}\approx 0.07$ 
+- **kernelized correlation filters**
+  - instead of a linear correlation filter we can employ the kernel trick
+  - we can formulate the tracking as a regularized least squares problem
+    $$\min_w\left(||Xw−y||^2+λ||w||^2\right)$$
+    where $X$ is a circulant matrix
+  - solution: 
+    $$w=(X^TX+λI)^{−1}X^Ty$$
+  - which can be (for a circulant matrix) computed as 
+    $$\hat w_{new}=\frac{\hat x \times \hat y}{\hat x^* \times \hat y + \lambda}$$
+    - where hats denote fourier image, and $\times$ denotes component-wise multiplication
+  - The same thing can be expressed with a kernel, e.g. map the $x$ with some non-linear function $\varphi(x)$
+  - The solution changes to 
+    $$\mathbf{\hat\alpha}=\frac{\mathbf{\hat y}}{\mathbf{\hat k}^{xx}+\lambda}$$
+- **Improvements**
+  - the correlation / kernelized correlation can be used on deep-learned features
+- ## Optical flow estimation
+- track each point and its change
+- **Deep nets**
+  - namely U-NET (encoder+decoder with skip connections)
+  - it has the advantage that it learns, we do not have to define discrepancy and smoothing functions for estimating the optical flow
 
 ### [Hough transform](https://www.youtube.com/watch?v=XRBc_xkZREg)
 - used to detect simple geometric shapes such as lines or circles
