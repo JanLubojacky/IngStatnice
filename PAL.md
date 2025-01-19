@@ -77,9 +77,18 @@ def dfs(graph, vertex, visited=None):
 - time complexity is $O(E \log V)$
 - Can be run in linear time for planar graphs
 
-### Strongly connected components
+### Strongly connected components (SCC)
 - SCC is a maximal subgraph in which a walker can freely move and can reach each node in SCC from every other node
-#### Tarjan
+#### [Tarjan](https://youtu.be/wUgWX0nc4NY?si=-9GhUq0EXey_cpCp)
+- start dfs from some random vertex
+- as each node is discovered assign it an id, and a low-link value that is equal to the id, we also push it to a stack (the stack signals that the node is explored but not yet in a component)
+- once the dfs ends the backtracking starts
+  - during the backtracking (return from the recursion) if the dfs stopped at a node that is on the stack we update the low-link values for all nodes we are returning trough with
+  ```python
+  if (on_stack[to])
+    low_link[at] = min(low_link[at], low_link[to])
+  ```
+- Then after the dfs if the backtracking ended up in a node where the node_id is equal to its low_link value, and we explored all the neighbours of that node, we found a SCC. Now we need to pop all the nodes with the same low_link value from the stack, the low_link value marks their component.
 
 ### Isomorphism
 - Two graphs are isomorphic if we can get a 1:1 mapping (bijection) that preserves the adjacency relationships between vertices
@@ -205,3 +214,41 @@ def dfs(graph, vertex, visited=None):
   - we have to order the points to decide in which order we insert them to the tree, this sorting has to happen for each coordinate so this will be $O(k\cdot n\log n)$, building the tree itself is then $O(n)$
 
 ## Presné a přibližné vyhledávání v textu založené na konečných automatech
+
+### Basics
+- **Abeceda**
+	- Konecny, neprazdny set symbolu
+- **Slovo (nad abecedou)**
+	- Konecna (i prazdna) sekvence znaku z abecedy
+- **Jazyk (nad abecedou)**
+	- Set slov (stringu)
+	- $|L|$ - kardinalita jazyka (pocet slov), muze byt i $\infty$
+- **Automaty**
+	- Konecne
+		- **A** - alphabet
+		- **Q** - states
+		- **$\sigma$** - transitions $\sigma : Q \times A \rightarrow A$
+		- $S_0$ - start state, $Q_f$ - final state(s)
+		- Complexity $O(n)$ - linear with length of text
+		- Zapis pomoci transition a final tabulek
+		- Funguji pouze pro regularni jazyky
+		- Code for simple FA
+
+
+### Text metrics
+- **Hamming distance**
+  - defined for two strings of the same length
+  - measures the number of different characters (missmatches) between the two strings
+  - $O(n)$
+- **Levenshtein distance**
+  - also called editing distance
+  - it measures the distance between strings with the number of edits needed to make them identical, where edits are insert, delete, replace
+  - it is done with a dynamic programming approach, so the complexity is $O(m\cdot n)$
+
+### Automata
+- both DFA and NFA can recognize only regular langauge, a language is regular if it can be expressed with a regular expression
+## DFA (deterministic finite automaton)
+- always in one state only
+## NFA (non-deterministic finite automaton)
+- can be in multiple states at one time
+- a word is accepted if at least one of the states the automaton is in is a final state
